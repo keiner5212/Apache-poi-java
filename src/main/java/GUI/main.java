@@ -32,6 +32,7 @@ public class main extends javax.swing.JFrame {
         fc.setCurrentDirectory(new File("C:\\Users\\" + usr + "\\Downloads"));
         ImageIcon iconobtn = new ImageIcon("src\\main\\java\\res\\icon.png");
         setIconImage(iconobtn.getImage());
+        imagenguia.setIcon(new ImageIcon("src\\main\\java\\res\\start.png"));
     }
 
     @SuppressWarnings("unchecked")
@@ -39,36 +40,30 @@ public class main extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
-        seleccionarfile = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        aceptar = new javax.swing.JButton();
-        filedir = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
+        imagenguia = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        seleccionarfile = new javax.swing.JButton();
+        sheets = new javax.swing.JComboBox<>();
+        aceptar = new javax.swing.JButton();
+        filedir = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
 
         jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(173, 213, 250));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        seleccionarfile.setText("Seleccionar archivo");
-        seleccionarfile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                seleccionarfileActionPerformed(evt);
-            }
-        });
-        getContentPane().add(seleccionarfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 30, -1, -1));
-
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 130, -1, -1));
-
-        aceptar.setText("aceptar");
-        aceptar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aceptarActionPerformed(evt);
-            }
-        });
-        getContentPane().add(aceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 190, -1, -1));
-        getContentPane().add(filedir, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 250, 330, 20));
+        jPanel1.setBackground(new java.awt.Color(173, 213, 250));
+        jPanel1.setForeground(new java.awt.Color(173, 213, 250));
+        jPanel1.setToolTipText("");
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton2.setText("jButton2");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -76,7 +71,7 @@ public class main extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 120, -1, -1));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 170, -1, -1));
 
         jButton3.setText("jButton3");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -84,7 +79,56 @@ public class main extends javax.swing.JFrame {
                 jButton3ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 20, -1, -1));
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, -1, -1));
+
+        jList1.setBackground(new java.awt.Color(149, 184, 246));
+        jList1.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
+        jList1.setForeground(new java.awt.Color(0, 0, 0));
+        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Exportar historial", "Eliminar historial", "Analizar excel", "Gestionar limites" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(jList1);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 110, 110));
+
+        imagenguia.setFocusable(false);
+        jPanel1.add(imagenguia, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 10, -1, -1));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 640, 330));
+
+        jPanel2.setBackground(new java.awt.Color(149, 250, 185));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        seleccionarfile.setText("Seleccionar archivo");
+        seleccionarfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                seleccionarfileActionPerformed(evt);
+            }
+        });
+        jPanel2.add(seleccionarfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+
+        jPanel2.add(sheets, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, -1, -1));
+
+        aceptar.setText("aceptar");
+        aceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aceptarActionPerformed(evt);
+            }
+        });
+        jPanel2.add(aceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, -1, -1));
+        jPanel2.add(filedir, new org.netbeans.lib.awtextra.AbsoluteConstraints(-100, 180, 330, 20));
+
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 350, 130, 310));
+
+        jPanel3.setBackground(new java.awt.Color(244, 250, 180));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 350, 150, 310));
+
+        jPanel4.setBackground(new java.awt.Color(225, 177, 188));
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 350, 150, 310));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -99,7 +143,7 @@ public class main extends javax.swing.JFrame {
             filedir.setText(fileName);
 
             try {
-                sheetNames x = new sheetNames(fileName, jComboBox1);
+                sheetNames x = new sheetNames(fileName, sheets);
                 x.start();
 
             } catch (Exception ex) {
@@ -112,7 +156,7 @@ public class main extends javax.swing.JFrame {
         String fileName = fc.getSelectedFile().getAbsolutePath();
         LoadScreen ls = new LoadScreen(true);
         ls.start();
-        ProcessExcel x = new ProcessExcel(fileName, jComboBox1.getSelectedIndex(), ls);
+        ProcessExcel x = new ProcessExcel(fileName, sheets.getSelectedIndex(), ls);
         x.start();
     }//GEN-LAST:event_aceptarActionPerformed
 
@@ -157,10 +201,17 @@ public class main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aceptar;
     private javax.swing.JLabel filedir;
+    private javax.swing.JLabel imagenguia;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JList<String> jList1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton seleccionarfile;
+    private javax.swing.JComboBox<String> sheets;
     // End of variables declaration//GEN-END:variables
 }
