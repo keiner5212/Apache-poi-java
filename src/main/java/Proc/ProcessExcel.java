@@ -23,18 +23,18 @@ public class ProcessExcel extends Thread {
         try {
             x.join();
         } catch (InterruptedException ex) {
-            System.out.println("ProcessExcel "+ex.getMessage());
+            System.out.println("ProcessExcel " + ex.getMessage());
         }
-        
-        Procesing pc=new Procesing();
+
+        Procesing pc = new Procesing();
         pc.start();
         try {
             pc.join();
         } catch (InterruptedException ex) {
-            System.out.println("ProcessExcel "+ex.getMessage());
+            System.out.println("ProcessExcel " + ex.getMessage());
         }
-        
-        ls.loop=false;
+
+        ls.loop = false;
     }
 
 }

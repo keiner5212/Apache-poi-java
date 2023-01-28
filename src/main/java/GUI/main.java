@@ -34,10 +34,10 @@ public class main extends javax.swing.JFrame {
         fc.setCurrentDirectory(new File("C:\\Users\\" + usr + "\\Downloads"));
         ImageIcon iconobtn = new ImageIcon("src\\main\\java\\res\\icon.png");
         setIconImage(iconobtn.getImage());
-        imagenguia.setIcon(new ImageIcon("src\\main\\java\\res\\start.png")); 
-        seleccionarfile.setIcon(new ImageIcon("src\\main\\java\\res\\subir.png"));                                 
-        export.setVisible(false);                         
-        analizar.setVisible(false);                         
+        imagenguia.setIcon(new ImageIcon("src\\main\\java\\res\\start.png"));
+        seleccionarfile.setIcon(new ImageIcon("src\\main\\java\\res\\subir.png"));
+        export.setVisible(false);
+        analizar.setVisible(false);
         limites.setVisible(false);
         aceptar.setVisible(false);
     }
@@ -178,30 +178,29 @@ public class main extends javax.swing.JFrame {
     }//GEN-LAST:event_aceptarActionPerformed
 
     private void menuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuMouseClicked
-        export.setVisible(false);                         
-        analizar.setVisible(false);                         
-        limites.setVisible(false);                      
+        export.setVisible(false);
+        analizar.setVisible(false);
+        limites.setVisible(false);
         imagenguia.setVisible(false);
         switch (menu.getSelectedIndex()) {
-            case 0:                       
-                export.setVisible(true);                              
-                JOptionPane.showMessageDialog(null, "guardar historial");   
+            case 0:
+                export.setVisible(true);
+                JOptionPane.showMessageDialog(null, "guardar historial");
                 break;
-            case 1:                       
-                export.setVisible(true);                              
-                JOptionPane.showMessageDialog(null, "eliminar historial");     
+            case 1:
+                export.setVisible(true);
+                JOptionPane.showMessageDialog(null, "eliminar historial");
                 break;
-            case 2:                      
-                analizar.setVisible(true); 
+            case 2:
+                analizar.setVisible(true);
                 break;
-            case 3:                      
-                limites.setVisible(true); 
+            case 3:
+                limites.setVisible(true);
                 break;
             default:
                 throw new AssertionError();
         }
     }//GEN-LAST:event_menuMouseClicked
-    
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {

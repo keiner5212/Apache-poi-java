@@ -42,8 +42,6 @@ public class XLSX2CSV {
 
         private void outputMissingRows(int number) {
             for (int i = 0; i < number; i++) {
-                fila++;
-                tabla.add(new ArrayList<>());
                 for (int j = 0; j < minColumns; j++) {
                     tabla.get(fila).add("None");
                 }
@@ -61,8 +59,6 @@ public class XLSX2CSV {
 
         @Override
         public void endRow(int rowNum) {
-            fila++;
-            tabla.add(new ArrayList<>());
             for (int i = currentCol; i < minColumns; i++) {
                 tabla.get(fila).add("None");
             }
@@ -73,6 +69,7 @@ public class XLSX2CSV {
             if (firstCellOfRow) {
                 fila++;
                 tabla.add(new ArrayList<>());
+                firstCellOfRow=false;
             }
 
             if (cellReference == null) {

@@ -3,7 +3,6 @@ package Proc;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
 
-
 public class Process extends Thread {
 
     private String path;
@@ -22,7 +21,7 @@ public class Process extends Thread {
             XLSX2CSV xlsx2csv = new XLSX2CSV(p, -1);
             xlsx2csv.process(sheet);
         } catch (Exception ex) {
-            System.out.println("Process "+ex.getMessage());
+            System.out.println("Process " + ex.getMessage());
         } finally {
             p.revert();
         }

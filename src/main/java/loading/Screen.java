@@ -1,4 +1,3 @@
-
 package loading;
 
 import javax.swing.ImageIcon;

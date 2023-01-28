@@ -27,7 +27,7 @@ public class sheetNames extends Thread {
             XLSX2CSV xlsx2csv = new XLSX2CSV(p, -1);
             xlsx2csv.getSheets(names);
         } catch (IOException | InvalidOperationException | OpenXML4JException | SAXException ex) {
-            System.out.println("sheetNames "+ex.getMessage());
+            System.out.println("sheetNames " + ex.getMessage());
         } finally {
             p.revert();
         }
