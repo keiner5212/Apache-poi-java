@@ -1,5 +1,6 @@
 package Proc;
 
+import Procesing.Procesing;
 import loading.LoadScreen;
 
 public class ProcessExcel extends Thread {
@@ -24,6 +25,15 @@ public class ProcessExcel extends Thread {
         } catch (InterruptedException ex) {
             System.out.println("ProcessExcel "+ex.getMessage());
         }
+        
+        Procesing pc=new Procesing();
+        pc.start();
+        try {
+            pc.join();
+        } catch (InterruptedException ex) {
+            System.out.println("ProcessExcel "+ex.getMessage());
+        }
+        
         ls.loop=false;
     }
 
