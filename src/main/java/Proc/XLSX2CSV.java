@@ -6,9 +6,7 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -47,6 +45,7 @@ public class XLSX2CSV {
                 }
             }
         }
+
         @Override
         public void startRow(int rowNum) {
 //          If there were gaps, output the missing rows
@@ -69,7 +68,7 @@ public class XLSX2CSV {
             if (firstCellOfRow) {
                 fila++;
                 tabla.add(new ArrayList<>());
-                firstCellOfRow=false;
+                firstCellOfRow = false;
             }
 
             if (cellReference == null) {

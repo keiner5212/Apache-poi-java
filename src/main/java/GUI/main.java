@@ -2,12 +2,8 @@ package GUI;
 
 import Proc.ProcessExcel;
 import Proc.sheetNames;
+import java.awt.Color;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -57,6 +53,8 @@ public class main extends javax.swing.JFrame {
         dir = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        lab = new javax.swing.JTextField();
         limites = new javax.swing.JPanel();
         export = new javax.swing.JPanel();
 
@@ -67,6 +65,7 @@ public class main extends javax.swing.JFrame {
         screen.setBackground(new java.awt.Color(173, 213, 250));
         screen.setForeground(new java.awt.Color(173, 213, 250));
         screen.setToolTipText("");
+        screen.setFocusable(false);
         screen.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         menu.setBackground(new java.awt.Color(149, 184, 246));
@@ -98,6 +97,7 @@ public class main extends javax.swing.JFrame {
         seleccionarfile.setForeground(new java.awt.Color(255, 255, 255));
         seleccionarfile.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         seleccionarfile.setBorderPainted(false);
+        seleccionarfile.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         seleccionarfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 seleccionarfileActionPerformed(evt);
@@ -105,14 +105,17 @@ public class main extends javax.swing.JFrame {
         });
         analizar.add(seleccionarfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 30, 30));
 
-        analizar.add(sheets, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
+        sheets.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        analizar.add(sheets, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, -1, -1));
 
         aceptar.setBackground(new java.awt.Color(149, 184, 246));
         aceptar.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
         aceptar.setForeground(new java.awt.Color(0, 0, 0));
         aceptar.setText("Aceptar");
+        aceptar.setToolTipText("Aceptar");
         aceptar.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         aceptar.setBorderPainted(false);
+        aceptar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         aceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 aceptarActionPerformed(evt);
@@ -127,17 +130,36 @@ public class main extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel2.setText("Selecciona el archivo que quieres analizar");
+        jLabel2.setText("Selecciona el archivo que quieres analizar:");
         analizar.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Selecciona la pagina que quieres analizar");
-        analizar.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, -1, -1));
+        jLabel3.setText("Ingresa el nombre del laboratorio:");
+        analizar.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, -1, -1));
 
-        screen.add(analizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 10, 550, 380));
+        jLabel4.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel4.setText("Selecciona la pagina que quieres analizar:");
+        analizar.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, -1, -1));
 
-        getContentPane().add(screen, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 690, 400));
+        lab.setForeground(new java.awt.Color(153, 153, 153));
+        lab.setText("Escribe aqui...");
+        lab.setToolTipText("Escribe aqui...");
+        lab.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        lab.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                labFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                labFocusLost(evt);
+            }
+        });
+        analizar.add(lab, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 170, -1));
+
+        screen.add(analizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 10, 580, 380));
+
+        getContentPane().add(screen, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 720, 400));
 
         limites.setBackground(new java.awt.Color(177, 134, 241));
         limites.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -173,7 +195,7 @@ public class main extends javax.swing.JFrame {
         String fileName = fc.getSelectedFile().getAbsolutePath();
         LoadScreen ls = new LoadScreen(true);
         ls.start();
-        ProcessExcel x = new ProcessExcel(fileName, sheets.getSelectedIndex(), ls);
+        ProcessExcel x = new ProcessExcel(fileName, sheets.getSelectedIndex(), ls, lab.getText());
         x.start();
     }//GEN-LAST:event_aceptarActionPerformed
 
@@ -202,6 +224,20 @@ public class main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_menuMouseClicked
 
+    private void labFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_labFocusGained
+        if (lab.getText().equalsIgnoreCase("Escribe aqui...")) {
+            lab.setText("");
+            lab.setForeground(new Color(0, 0, 0));
+        }
+    }//GEN-LAST:event_labFocusGained
+
+    private void labFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_labFocusLost
+        if (lab.getText().trim().equalsIgnoreCase("")) {
+            lab.setText("Escribe aqui...");
+            lab.setForeground(new Color(153, 153, 153));
+        }
+    }//GEN-LAST:event_labFocusLost
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -223,7 +259,9 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JLabel imagenguia;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField lab;
     private javax.swing.JPanel limites;
     private javax.swing.JList<String> menu;
     private javax.swing.JPanel screen;
