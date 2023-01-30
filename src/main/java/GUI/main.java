@@ -52,11 +52,13 @@ public class main extends javax.swing.JFrame {
         aceptar = new javax.swing.JButton();
         dir = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         lab = new javax.swing.JTextField();
-        limites = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
         export = new javax.swing.JPanel();
+        outpath = new javax.swing.JLabel();
+        res = new javax.swing.JLabel();
+        limites = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(173, 213, 250));
@@ -121,7 +123,7 @@ public class main extends javax.swing.JFrame {
                 aceptarActionPerformed(evt);
             }
         });
-        analizar.add(aceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 350, 60, 20));
+        analizar.add(aceptar, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 340, 60, 30));
 
         dir.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
         dir.setForeground(new java.awt.Color(0, 0, 0));
@@ -132,11 +134,6 @@ public class main extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Selecciona el archivo que quieres analizar:");
         analizar.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
-
-        jLabel3.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Ingresa el nombre del laboratorio:");
-        analizar.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, -1, -1));
 
         jLabel4.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
@@ -157,17 +154,33 @@ public class main extends javax.swing.JFrame {
         });
         analizar.add(lab, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 170, -1));
 
+        jLabel5.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel5.setText("Ingresa el nombre del laboratorio:");
+        analizar.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, -1, -1));
+
         screen.add(analizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 10, 580, 380));
+
+        export.setBackground(new java.awt.Color(225, 177, 188));
+        export.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        outpath.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
+        outpath.setForeground(new java.awt.Color(0, 0, 0));
+        outpath.setText("...");
+        export.add(outpath, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 540, 20));
+
+        res.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
+        res.setForeground(new java.awt.Color(0, 0, 0));
+        res.setText("...");
+        export.add(res, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 250, 20));
+
+        screen.add(export, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 10, 580, 380));
 
         getContentPane().add(screen, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 720, 400));
 
         limites.setBackground(new java.awt.Color(177, 134, 241));
         limites.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        getContentPane().add(limites, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 430, 560, 320));
-
-        export.setBackground(new java.awt.Color(225, 177, 188));
-        export.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        getContentPane().add(export, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 680, 560, 330));
+        getContentPane().add(limites, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 410, 560, 230));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -200,6 +213,8 @@ public class main extends javax.swing.JFrame {
     }//GEN-LAST:event_aceptarActionPerformed
 
     private void menuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuMouseClicked
+        res.setText("...");
+        outpath.setText("...");
         export.setVisible(false);
         analizar.setVisible(false);
         limites.setVisible(false);
@@ -211,7 +226,7 @@ public class main extends javax.swing.JFrame {
                 break;
             case 1:
                 export.setVisible(true);
-                JOptionPane.showMessageDialog(null, "eliminar historial");
+                deleteHistory();
                 break;
             case 2:
                 analizar.setVisible(true);
@@ -223,6 +238,27 @@ public class main extends javax.swing.JFrame {
                 throw new AssertionError();
         }
     }//GEN-LAST:event_menuMouseClicked
+
+    public void deleteHistory() {
+        File arc = new File("src\\main\\java\\temp\\history.data");
+        if (arc.exists()) {
+            int resp = JOptionPane.showConfirmDialog(null, "Estas seguro?", "Eliminar", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (resp == 0 && arc.delete()) {
+                res.setText("Eliminado correctmente.");
+                outpath.setText("se ha eliminado el historial.");
+            } else {
+                res.setText("Algo ha fallado.");
+                outpath.setText("No se pudo eliminar el archivo.");
+            }
+        } else {
+            res.setText("Algo ha fallado.");
+            outpath.setText("Seguramente no hay un historial a eliminar.");
+        }
+    }
+
+    public void exportHistory() {
+        
+    }
 
     private void labFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_labFocusGained
         if (lab.getText().equalsIgnoreCase("Escribe aqui...")) {
@@ -258,12 +294,14 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JPanel export;
     private javax.swing.JLabel imagenguia;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField lab;
     private javax.swing.JPanel limites;
     private javax.swing.JList<String> menu;
+    private javax.swing.JLabel outpath;
+    private javax.swing.JLabel res;
     private javax.swing.JPanel screen;
     private javax.swing.JButton seleccionarfile;
     private javax.swing.JComboBox<String> sheets;
