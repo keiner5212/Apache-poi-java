@@ -11,10 +11,12 @@ public class Process extends Thread {
 
     private final String path;
     private final int sheet;
+    private final String name;
 
-    public Process(String path, int sheet) {
+    public Process(String path, int sheet,String name) {
         this.path = path;
         this.sheet = sheet;
+        this.name=name;
     }
 
     @Override
@@ -22,7 +24,7 @@ public class Process extends Thread {
         OPCPackage p = null;
         try {
             p = OPCPackage.open(path, PackageAccess.READ);
-            XLSX2CSV xlsx2csv = new XLSX2CSV(p, -1);
+            XLSX2CSV xlsx2csv = new XLSX2CSV(p, -1,name);
             xlsx2csv.process(sheet);
         } catch (IOException | InvalidOperationException | OpenXML4JException | SAXException ex) {
             System.out.println("Process " + ex.getMessage());

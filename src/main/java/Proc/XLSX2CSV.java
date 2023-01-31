@@ -94,10 +94,12 @@ public class XLSX2CSV {
     private final OPCPackage xlsxPackage;
 
     private final int minColumns;
+    private final String name;
 
-    public XLSX2CSV(OPCPackage pkg, int minColumns) {
+    public XLSX2CSV(OPCPackage pkg, int minColumns,String name) {
         this.xlsxPackage = pkg;
         this.minColumns = minColumns;
+        this.name=name;
     }
 
     public void processSheet(Styles styles, SharedStrings strings, SheetContentsHandler sheetHandler, InputStream sheetInputStream) throws IOException, SAXException {
@@ -115,7 +117,7 @@ public class XLSX2CSV {
 
     public void save(ArrayList<ArrayList<String>> tabla) {
         try {
-            FileOutputStream fout = new FileOutputStream("src\\main\\java\\temp\\tabla.data");
+            FileOutputStream fout = new FileOutputStream("src\\main\\java\\temp\\"+name+".data");
             try (ObjectOutputStream writeStream = new ObjectOutputStream(fout)) {
                 writeStream.writeObject(tabla);
             }

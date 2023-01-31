@@ -43,6 +43,7 @@ public class Procesing extends Thread {
     private final XSSFCellStyle styleGris = workbook.createCellStyle();
     private final XSSFCellStyle styleAmarillo = workbook.createCellStyle();
     private final XSSFCellStyle styleRojo = workbook.createCellStyle();
+    private ArrayList<ArrayList<String>> tablaLimites;
 
     public Procesing(String lab) {
         tabla = new ArrayList<>();
@@ -50,6 +51,7 @@ public class Procesing extends Thread {
         listaInteres = new ArrayList<>();
         this.lab = lab;
         tablaUbicaciones = new ArrayList<>();
+        tablaLimites = new ArrayList<>();
 
         styleGris.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
         styleGris.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -66,6 +68,14 @@ public class Procesing extends Thread {
 
     @Override
     public void run() {
+        File h = new File("src\\main\\java\\outs\\history.xlsx");
+        if (h.exists()) {
+            try {
+                h.delete();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
         boolean newH = false;
         try {
             cargar();
@@ -97,6 +107,12 @@ public class Procesing extends Thread {
             }
         }
 
+        try {
+            cargarLimite();
+        } catch (IOException | ClassNotFoundException ex) {
+            System.out.println("save " + ex.getMessage());
+        }
+
         for (int i = headerPos + 1; i < tabla.size(); i++) {
             historial.add(new ArrayList<>());
             historial.get(historial.size() - 1).add(lab.equals("Escribe aqui...") ? "-" : lab);
@@ -111,7 +127,12 @@ public class Procesing extends Thread {
                     if (listaInteres.indexOf(j) == 9) {
                         historial.get(historial.size() - 1).add(" ");
                     }
-                    historial.get(historial.size() - 1).add(tabla.get(i).get(j));
+                    try {
+                        historial.get(historial.size() - 1).add(tabla.get(i).get(j));
+                    } catch (Exception e) {
+                        System.out.println("err");
+                    }
+
                 }
             }
         }
@@ -132,7 +153,7 @@ public class Procesing extends Thread {
                     maxLDato.set(numeroCelda, dato);
                 }
                 Cell cell = row.createCell(numeroCelda++);
-                double datoD;
+                double datoD = 0;
                 String datoS = dato;
                 try {
                     dato = dato.replaceAll(",", ".");
@@ -143,6 +164,62 @@ public class Procesing extends Thread {
                 }
                 if (numeroRenglon == 1 && newH) {
                     cell.setCellStyle(styleGris);
+                }
+                if (numeroCelda >= 13 && numeroRenglon > 1) {
+                    if (datoS.equals("None")) {
+                        cell.setCellValue(0);
+                        datoS = "0";
+                    }
+                    int serL = searhLimite(historial.get(numeroRenglon - 1).get(4), historial.get(numeroRenglon - 1).get(5), searhElementLim(historial.get(0).get(numeroCelda - 1)));
+                    double aux1;
+                    double aux2;
+                    double aux3;
+                    if (serL != -1) {
+                        int type = typelim(tablaLimites.get(serL));
+                        switch (type) {
+                            case 0:
+                                aux1 = Double.parseDouble(tablaLimites.get(serL).get(8).replaceAll(",", "."));
+                                if (datoD > aux1) {
+                                    cell.setCellStyle(styleRojo);
+                                }
+                                break;
+                            case 1:
+                                aux1 = Double.parseDouble(tablaLimites.get(serL).get(6).replaceAll(",", "."));
+                                aux2 = Double.parseDouble(tablaLimites.get(serL).get(7).replaceAll(",", "."));
+                                aux3 = Double.parseDouble(tablaLimites.get(serL).get(8).replaceAll(",", "."));
+                                if (datoD <= aux1 && datoD >= aux2) {
+                                    cell.setCellStyle(styleAmarillo);
+                                } else {
+                                    if (datoD <= aux3) {
+                                        cell.setCellStyle(styleRojo);
+                                    }
+                                }
+
+                                if (historial.get(0).get(numeroCelda - 1).equals("V100C")) {
+                                    if (tablaLimites.get(serL + 1).get(2).contains("V100C")) {
+                                        aux1 = Double.parseDouble(tablaLimites.get(serL + 1).get(8).replaceAll(",", "."));
+                                        if (datoD > aux1) {
+                                            cell.setCellStyle(styleRojo);
+                                        }
+                                    }
+                                }
+                                break;
+                            case 2:
+                                aux1 = Double.parseDouble(tablaLimites.get(serL).get(6).replaceAll(",", "."));
+                                aux2 = Double.parseDouble(tablaLimites.get(serL).get(7).replaceAll(",", "."));
+                                aux3 = Double.parseDouble(tablaLimites.get(serL).get(8).replaceAll(",", "."));
+                                if (datoD >= aux1 && datoD <= aux2) {
+                                    cell.setCellStyle(styleAmarillo);
+                                }
+                                if (datoD > aux3) {
+                                    cell.setCellStyle(styleRojo);
+                                }
+                                break;
+                            default:
+                                System.out.println(historial.get(numeroRenglon - 1).get(4) + " " + historial.get(numeroRenglon - 1).get(5) + " " + searhElementLim(historial.get(0).get(numeroCelda - 1)));
+                                break;
+                        }
+                    }
                 }
             }
         }
@@ -166,6 +243,26 @@ public class Procesing extends Thread {
         }
     }
 
+    public int typelim(ArrayList<String> x) {
+        if (x.size() > 4) {
+            if (x.get(4).equalsIgnoreCase("Mayor que ---->")) {
+                return 0; //max
+            }
+            try {
+                double start = Double.parseDouble(x.get(4).replaceAll(",", "."));
+                double end = Double.parseDouble(x.get(8).replaceAll(",", "."));
+                if (start > end) {
+                    return 1; //decreciente
+                }
+                if (start < end) {
+                    return 2; //creciente
+                }
+            } catch (NumberFormatException e) {
+            }
+        }
+        return -1;
+    }
+
     public void deleteFile(String name) {
         File arc = new File("src\\main\\java\\temp\\" + name + ".data");
         if (arc.exists()) {
@@ -177,11 +274,59 @@ public class Procesing extends Thread {
     public String searhUbicacion(String id, String model) {
         String out = "-";
         for (ArrayList<String> tablaUbicacione : tablaUbicaciones) {
-            if (!tablaUbicacione.get(0).equals("4007")) {
+            if (!(tablaUbicacione.size() < 3)) {
                 if (tablaUbicacione.get(0).equals(id) && tablaUbicacione.get(2).equals(model)) {
                     out = tablaUbicacione.get(1);
                 }
             }
+        }
+        return out;
+    }
+
+    public int searhLimite(String model, String sistema, String elemento) {
+        for (int i = 0; i < tablaLimites.size(); i++) {
+            if (tablaLimites.get(i).get(0).equalsIgnoreCase(model)) {
+                if (tablaLimites.get(i).get(1).equalsIgnoreCase(sistema)) {
+                    if (tablaLimites.get(i).get(2).equalsIgnoreCase(elemento)) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    public String searhElementLim(String elemento) {
+        String out = "x";
+        switch (elemento) {
+            case "V100C":
+                return "V100C";
+            case "OXI":
+                return "Oxid";
+            case "TBN":
+                return "TBN";
+            case "SODIO":
+                return "Sodio";
+            case "POTASIO":
+                return "Potasio";
+            case "SILICIO":
+                return "Silicio";
+            case "HOLLÍN":
+                return "Hollín";
+            case "ALUMINIO":
+                return "Aluminio";
+            case "CROMO":
+                return "Cromo";
+            case "COBRE":
+                return "Cobre";
+            case "HIERRO":
+                return "Hierro";
+            case "PLOMO":
+                return "Plomo";
+            case "ESTAÑO":
+                return "Estaño";
+            case "MOLIBDENO":
+                return "Molibdeno";
         }
         return out;
     }
@@ -278,6 +423,13 @@ public class Procesing extends Thread {
                 listaInteres.add(index);
             }
         }
+    }
+
+    private void cargarLimite() throws FileNotFoundException, IOException, ClassNotFoundException {
+        FileInputStream fileStream = new FileInputStream("src\\main\\java\\temp\\limites.data");
+        ObjectInputStream objStream = new ObjectInputStream(fileStream);
+        tablaLimites = (ArrayList<ArrayList<String>>) objStream.readObject();
+        objStream.close();
     }
 
     private void getInteresPositionsLab1() {
