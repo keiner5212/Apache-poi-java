@@ -1,6 +1,5 @@
 package Procesing;
 
-import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -21,55 +21,61 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class Procesing extends Thread {
 
     private ArrayList<ArrayList<String>> tabla;
+    private ArrayList<ArrayList<String>> tablaUbicaciones;
     private ArrayList<ArrayList<String>> historial;
-    private ArrayList<Integer> listaInteres;
+    private final ArrayList<Integer> listaInteres;
     private int headerPos = 0;
-    private String lab;
-    private  String headersOut[] = {
-            "Sample Id", "Equipo", "Modelo", "Componente",
-            "Tipo Aceite", "Fecha Toma de muestra", "Fecha Análisis de muestra", "Horas Aceite",
-            "Cambio Aceite", "Comentarios", "V100C", "NIT",
-            "OXI", "SUL", "TAN", "TBN",
-            "Magnesio", "Calcio", "Zinc", "Fósforo",
-            "Boro", "Fuel", "Vanadio", "Agua(ppm)",
-            "Glycol", "Sodio", "Potasio", "Silicio",
-            "Hollín", "Aluminio", "Cromo", "Cobre",
-            "Hierro", "Plomo", "Estaño", "Manganeso",
-            "Molibdeno","Niquel","ISO"
-        };
-    
-    private XSSFWorkbook workbook = new XSSFWorkbook();
-    private XSSFCellStyle styleGris = workbook.createCellStyle();
-    private XSSFCellStyle styleAmarillo = workbook.createCellStyle();
-    private XSSFCellStyle styleRojo = workbook.createCellStyle();
-    
+    private final String lab;
+    private final String headersOut[] = {
+        "LABORATORIO", "UBICACION", "SAMPLE ID", "EQUIPO", "MODELO", "COMPONENTE",
+        "TIPO ACEITE", "FECHA TOMA DE MUESTRA", "FECHA ANÁLISIS DE MUESTRA", "HORAS ACEITE",
+        "CAMBIO ACEITE", "COMENTARIOS", "V100C", "NIT",
+        "OXI", "SUL", "TAN", "TBN",
+        "MAGNESIO", "CALCIO", "ZINC", "FÓSFORO",
+        "BORO", "FUEL", "VANADIO", "AGUA(PPM)",
+        "GLYCOL", "SODIO", "POTASIO", "SILICIO",
+        "HOLLÍN", "ALUMINIO", "CROMO", "COBRE",
+        "HIERRO", "PLOMO", "ESTAÑO", "MANGANESO",
+        "MOLIBDENO", "NIQUEL", "ISO"
+    };
+
+    private final XSSFWorkbook workbook = new XSSFWorkbook();
+    private final XSSFCellStyle styleGris = workbook.createCellStyle();
+    private final XSSFCellStyle styleAmarillo = workbook.createCellStyle();
+    private final XSSFCellStyle styleRojo = workbook.createCellStyle();
+
     public Procesing(String lab) {
         tabla = new ArrayList<>();
         historial = new ArrayList<>();
         listaInteres = new ArrayList<>();
         this.lab = lab;
-        
-        styleGris.setFillForegroundColor(IndexedColors.GREY_40_PERCENT.index);
+        tablaUbicaciones = new ArrayList<>();
+
+        styleGris.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
         styleGris.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        XSSFFont negrilla=workbook.createFont();
+        XSSFFont negrilla = workbook.createFont();
         negrilla.setBold(true);
         styleGris.setFont(negrilla);
-        
+
         styleAmarillo.setFillForegroundColor(IndexedColors.YELLOW.index);
         styleAmarillo.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        
+
         styleRojo.setFillForegroundColor(IndexedColors.RED.index);
         styleRojo.setFillPattern(FillPatternType.SOLID_FOREGROUND);
     }
 
     @Override
     public void run() {
-        boolean newH=false;
+        boolean newH = false;
         try {
             cargar();
         } catch (IOException | ClassNotFoundException ex) {
-            tabla = new ArrayList<>();
             System.out.println(ex.getMessage());
+        }
+        try {
+            cargarUbicaciones();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
         }
         getHeader();
         getInteresPositionsLab1();
@@ -78,13 +84,11 @@ public class Procesing extends Thread {
             getInteresPositionsLab2();
         }
         File arc = new File("src\\main\\java\\temp\\history.data");
-        if (!arc.exists()){
+        if (!arc.exists()) {
             historial.add(new ArrayList<>());
-            for (String header : headersOut) {
-                historial.get(0).add(header);
-            }
-            newH=true;
-        }else{
+            historial.get(0).addAll(Arrays.asList(headersOut));
+            newH = true;
+        } else {
             try {
                 cargarHistorial();
             } catch (IOException | ClassNotFoundException ex) {
@@ -92,68 +96,99 @@ public class Procesing extends Thread {
                 System.out.println("save " + ex.getMessage());
             }
         }
-        for (int i = headerPos+1; i <tabla.size() ; i++) {
+
+        for (int i = headerPos + 1; i < tabla.size(); i++) {
             historial.add(new ArrayList<>());
-            for (int j: listaInteres) {
-                if (listaInteres.indexOf(j)==9) {
-                    historial.get(historial.size()-1).add(" ");
+            historial.get(historial.size() - 1).add(lab.equals("Escribe aqui...") ? "-" : lab);
+            String ubi = searhUbicacion(
+                    tabla.get(i).get(listaInteres.get(1)),
+                    tabla.get(i).get(listaInteres.get(2)));
+            historial.get(historial.size() - 1).add(ubi);
+            for (int j : listaInteres) {
+                if (j == 9999) {
+                    historial.get(historial.size() - 1).add("-");
+                } else {
+                    if (listaInteres.indexOf(j) == 9) {
+                        historial.get(historial.size() - 1).add(" ");
+                    }
+                    historial.get(historial.size() - 1).add(tabla.get(i).get(j));
                 }
-                historial.get(historial.size()-1).add(tabla.get(i).get(j));
             }
         }
         save(historial, "history");
         deleteFile("tabla");
-        
+        ArrayList<String> maxLDato = new ArrayList<>();
+        for (String headersOut1 : headersOut) {
+            maxLDato.add("");
+        }
         Sheet sheet = workbook.createSheet("RES");
         int numeroRenglon = 0;
+
         for (ArrayList<String> arrayList : historial) {
             Row row = sheet.createRow(numeroRenglon++);
             int numeroCelda = 0;
             for (String dato : arrayList) {
+                if (dato.length() > maxLDato.get(numeroCelda).length()) {
+                    maxLDato.set(numeroCelda, dato);
+                }
                 Cell cell = row.createCell(numeroCelda++);
                 double datoD;
-                String datoS=dato;
+                String datoS = dato;
                 try {
-                    dato = dato.replaceAll(",",".");
-                    datoD=Double.parseDouble(dato);
+                    dato = dato.replaceAll(",", ".");
+                    datoD = Double.parseDouble(dato);
                     cell.setCellValue(datoD);
-                } catch (Exception e) {
+                } catch (NumberFormatException e) {
                     cell.setCellValue(datoS);
                 }
-                if (numeroRenglon==1 && newH) {
+                if (numeroRenglon == 1 && newH) {
                     cell.setCellStyle(styleGris);
                 }
             }
         }
         for (int i = 0; i < headersOut.length; i++) {
             int tamano = 6500;
+            if (maxLDato.get(i).length() < 10) {
+                tamano = maxLDato.get(i).length() * 500;
+            }
             sheet.setColumnWidth(i, tamano);
         }
         saveExcel();
     }
-    
-    public void saveExcel(){
+
+    public void saveExcel() {
         try {
-            //Se genera el documento
             FileOutputStream out = new FileOutputStream(new File("src\\main\\java\\outs\\history.xlsx"));
             workbook.write(out);
             out.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
-    
+
     public void deleteFile(String name) {
-        File arc = new File("src\\main\\java\\temp\\"+name+".data");
+        File arc = new File("src\\main\\java\\temp\\" + name + ".data");
         if (arc.exists()) {
             arc.delete();
             System.out.println("success...");
         }
     }
-    
-    public void save(ArrayList<ArrayList<String>> tabla,String name) {
+
+    public String searhUbicacion(String id, String model) {
+        String out = "-";
+        for (ArrayList<String> tablaUbicacione : tablaUbicaciones) {
+            if (!tablaUbicacione.get(0).equals("4007")) {
+                if (tablaUbicacione.get(0).equals(id) && tablaUbicacione.get(2).equals(model)) {
+                    out = tablaUbicacione.get(1);
+                }
+            }
+        }
+        return out;
+    }
+
+    public void save(ArrayList<ArrayList<String>> tabla, String name) {
         try {
-            FileOutputStream fout = new FileOutputStream("src\\main\\java\\temp\\"+name+".data");
+            FileOutputStream fout = new FileOutputStream("src\\main\\java\\temp\\" + name + ".data");
             try (ObjectOutputStream writeStream = new ObjectOutputStream(fout)) {
                 writeStream.writeObject(tabla);
             }
@@ -169,7 +204,14 @@ public class Procesing extends Thread {
         tabla = (ArrayList<ArrayList<String>>) objStream.readObject();
         objStream.close();
     }
-    
+
+    private void cargarUbicaciones() throws FileNotFoundException, IOException, ClassNotFoundException {
+        FileInputStream fileStream = new FileInputStream("src\\main\\java\\temp\\ubicaciones.data");
+        ObjectInputStream objStream = new ObjectInputStream(fileStream);
+        tablaUbicaciones = (ArrayList<ArrayList<String>>) objStream.readObject();
+        objStream.close();
+    }
+
     private void cargarHistorial() throws FileNotFoundException, IOException, ClassNotFoundException {
         FileInputStream fileStream = new FileInputStream("src\\main\\java\\temp\\history.data");
         ObjectInputStream objStream = new ObjectInputStream(fileStream);
@@ -190,23 +232,47 @@ public class Procesing extends Thread {
 
     private void getInteresPositionsLab2() {
         String headers[] = {
-            "", "", "", "",
-            "", "", "", "",
-            "", "", "", "",
-            "", "", "", "",
-            "", "", "", "",
-            "", "", "", "",
-            "", "", "", "",
-            "", "", "", "",
-            "", "", "", "",
-            "", ""
+            "No. de control de laboratorio", "ID de equipo",
+            "Model", "Compartimento", "Fluid Weight",
+            "Fecha de Toma de Muestra", "Fecha de laboratorio", "Meter on Fluid",
+            "Fluido Cambiado", "V100", "NIT", "OXI", "SUL", "TAN",
+            "TBN", "Mg", "Ca", "Zn", "P", "B", "PFc", "V",
+            "W", "Glycol-%", "Na", "K", "Si", "ST", "Al", "Cr", "Cu",
+            "Fe", "Pb", "Sn", "Mn", "Mo", "Ni", "ISO"
         };
         for (String header : headers) {
             int index;
-            if (header.equalsIgnoreCase("") || header.equalsIgnoreCase("")) {
-                index = searchi(header);
-            }else{
-                index = searchc(header);
+            if (!header.equals("Glycol-%")) {
+                if (header.equals("NIT")
+                        || header.equals("P")
+                        || header.equals("B")
+                        || header.equals("W")
+                        || header.equals("OXI")
+                        || header.equals("SUL")
+                        || header.equals("TAN")
+                        || header.equals("TBN")
+                        || header.equals("Mg")
+                        || header.equals("Ca")
+                        || header.equals("K")
+                        || header.equals("Si")
+                        || header.equals("V")
+                        || header.equals("ST")
+                        || header.equals("Al")
+                        || header.equals("Cr")
+                        || header.equals("Cu")
+                        || header.equals("Fe")
+                        || header.equals("Pb")
+                        || header.equals("Sn")
+                        || header.equals("Mn")
+                        || header.equals("Mo")
+                        || header.equals("Ni")
+                        || header.equals("ISO")) {
+                    index = searchi(header);
+                } else {
+                    index = searchc(header);
+                }
+            } else {
+                index = 9999;
             }
             if (index != -1) {
                 listaInteres.add(index);
@@ -228,9 +294,9 @@ public class Procesing extends Thread {
             "Sn (", "Mn (", "Mo (", "Ni (", "ISOCODE"};
         for (String header : headers) {
             int index;
-            if (header.equalsIgnoreCase("P") || header.equalsIgnoreCase("Zn")) {
+            if (header.equals("P") || header.equals("Zn")) {
                 index = searchi(header);
-            }else{
+            } else {
                 index = searchc(header);
             }
             if (index != -1) {
@@ -247,9 +313,10 @@ public class Procesing extends Thread {
         }
         return -1;
     }
+
     private int searchi(String target) {
         for (int i = 0; i < tabla.get(headerPos).size(); i++) {
-            if (tabla.get(headerPos).get(i).equalsIgnoreCase(target)) {
+            if (tabla.get(headerPos).get(i).trim().equalsIgnoreCase(target)) {
                 return i;
             }
         }

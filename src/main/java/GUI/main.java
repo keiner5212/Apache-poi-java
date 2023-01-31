@@ -257,7 +257,7 @@ public class main extends javax.swing.JFrame {
     }
 
     public void exportHistory() {
-        
+
     }
 
     private void labFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_labFocusGained
@@ -276,6 +276,7 @@ public class main extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

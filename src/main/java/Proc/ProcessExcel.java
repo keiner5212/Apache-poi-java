@@ -5,10 +5,10 @@ import loading.LoadScreen;
 
 public class ProcessExcel extends Thread {
 
-    private String path;
-    private String lab;
-    private int sheet;
-    private LoadScreen ls;
+    private final String path;
+    private final String lab;
+    private final int sheet;
+    private final LoadScreen ls;
 
     public ProcessExcel(String path, int sheet, LoadScreen ls, String lab) {
         this.path = path;
